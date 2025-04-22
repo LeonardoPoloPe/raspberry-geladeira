@@ -9,12 +9,13 @@ API_URL = 'https://leonardopolo.com.br/geladeira/verificarstatus.php?id=1'
 CHECAR_A_CADA_SEGUNDOS = 1  # Frequência de checagem
 
 def ligar_rele():
-    GPIO.output(RELE_GPIO_PIN, GPIO.HIGH)
     print("Relé LIGADO (Destravada)")
+    GPIO.setup(RELE_GPIO_PIN, GPIO.OUT)
+    GPIO.output(RELE_GPIO_PIN, GPIO.LOW)
 
 def desligar_rele():
-    GPIO.output(RELE_GPIO_PIN, GPIO.LOW)
     print("Relé DESLIGADO (Travada)")
+    GPIO.setup(RELE_GPIO_PIN, GPIO.IN)  # Configura como entrada (alta impedância)
 
 def checar_status():
     try:
@@ -55,7 +56,6 @@ def checar_status():
 def main():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(RELE_GPIO_PIN, GPIO.OUT)
     desligar_rele()  # Inicializa desligado
 
     try:
