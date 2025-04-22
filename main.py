@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import requests
 import time
+import json
 
 # CONFIGURAÇÃO
 RELE_GPIO_PIN = 17  # Altere se desejar outro pino
@@ -18,6 +19,13 @@ def desligar_rele():
 def checar_status():
     try:
         resp = requests.get(API_URL, timeout=5)
+        print(f"Response status code: {resp.status_code}")
+        print(f"Response content: {resp.text}")
+        
+        if resp.status_code != 200:
+            print(f"API returned error status code: {resp.status_code}")
+            return
+            
         data = resp.json()
         if not data.get("success"):
             print("API retornou erro.")
@@ -32,6 +40,11 @@ def checar_status():
             desligar_rele()
         else:
             print("Status desconhecido! Nenhuma ação tomada.")
+    except requests.exceptions.RequestException as e:
+        print(f"Erro na requisição HTTP: {e}")
+    except json.JSONDecodeError as e:
+        print(f"Erro ao decodificar JSON: {e}")
+        print(f"Conteúdo recebido: {resp.text if 'resp' in locals() else 'N/A'}")
     except Exception as e:
         print(f"Erro ao consultar API: {e}")
 
