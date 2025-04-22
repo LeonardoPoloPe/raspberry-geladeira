@@ -18,7 +18,11 @@ def desligar_rele():
 
 def checar_status():
     try:
-        resp = requests.get(API_URL, timeout=5)
+        headers = {
+            'Accept': 'application/json',
+            'User-Agent': 'RaspberryPi-Geladeira/1.0'
+        }
+        resp = requests.get(API_URL, headers=headers, timeout=5)
         print(f"Response status code: {resp.status_code}")
         print(f"Response content: {resp.text}")
         
