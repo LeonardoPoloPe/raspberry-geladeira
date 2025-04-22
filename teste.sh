@@ -1,31 +1,21 @@
 #!/bin/bash
 
-# Certifique-se de que estamos executando como root
-if [ "$(id -u)" -ne 0 ]; then
-   echo "Este script precisa ser executado como root" 
-   exit 1
-fi
+# Função para ativar o relé
+ativar_rele() {
+    echo "Ativando o relé..."
+    sudo gpioset gpiochip0 17=0
+    sleep 2
+}
 
-# Exportar o pino (se já estiver exportado, pode falhar, mas continuamos)
-echo "17" > /sys/class/gpio/export 2>/dev/null || true
+# Função para desativar o relé
+desativar_rele() {
+    echo "Desativando o relé..."
+    sudo gpioget gpiochip0 17 > /dev/null
+    sleep 2
+}
 
-# Aguarde um momento para o sistema processar
-sleep 0.5
-
-# Configurar como saída
-echo "out" > /sys/class/gpio/gpio17/direction
-
-# Definir como LOW (ativar relé)
-echo "0" > /sys/class/gpio/gpio17/value
-echo "Relé deve estar ATIVADO agora (LOW)"
-sleep 3
-
-# Definir como HIGH (desativar relé)
-echo "1" > /sys/class/gpio/gpio17/value
-echo "Relé deve estar DESATIVADO agora (HIGH)"
-sleep 3
-
-# Liberar o pino
-echo "17" > /sys/class/gpio/unexport
-
-echo "Teste concluído"
+# Loop principal
+while true; do
+    ativar_rele
+    desativar_rele
+done

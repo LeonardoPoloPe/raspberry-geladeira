@@ -1,27 +1,29 @@
 import RPi.GPIO as GPIO
 import time
+import os
 
-RELE_GPIO_PIN = 17  # GPIO17 = pino físico 11
-
+RELE_PIN = 17
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-GPIO.setup(RELE_GPIO_PIN, GPIO.OUT)
 
-print("Iniciando novo teste do relé...")
+print("Controlando o relé com base no comportamento observado...")
 
 try:
     while True:
-        print("Ligando relé...")
-        GPIO.output(RELE_GPIO_PIN, GPIO.LOW)  # INVERTIDO: LOW para ligar
+        # Ativar o relé (configurando como saída)
+        print("Ativando o relé...")
+        GPIO.setup(RELE_PIN, GPIO.OUT)
+        GPIO.output(RELE_PIN, GPIO.LOW)  # ou GPIO.HIGH, ambos parecem funcionar
         time.sleep(2)
-
-        print("Desligando relé...")
-        GPIO.output(RELE_GPIO_PIN, GPIO.HIGH)  # INVERTIDO: HIGH para desligar
+        
+        # Desativar o relé (configurando como entrada)
+        print("Desativando o relé...")
+        GPIO.setup(RELE_PIN, GPIO.IN)  # Configura como entrada (alta impedância)
         time.sleep(2)
-
+        
 except KeyboardInterrupt:
-    print("Teste interrompido pelo usuário.")
-
+    print("Programa interrompido pelo usuário")
+    
 finally:
     GPIO.cleanup()
-    print("GPIO limpo. Fim do teste.")
+    print("GPIO limpo")
