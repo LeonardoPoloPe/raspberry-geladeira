@@ -1,22 +1,27 @@
 import RPi.GPIO as GPIO
 import time
 
-RELE_GPIO_PIN = 17
+RELE_GPIO_PIN = 17  # GPIO17 = pino físico 11
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 GPIO.setup(RELE_GPIO_PIN, GPIO.OUT)
 
-print("Testando lógica do relé...")
+print("Iniciando novo teste do relé...")
 
-# Teste com LOW
-print("Definindo como LOW...")
-GPIO.output(RELE_GPIO_PIN, GPIO.LOW)
-time.sleep(5)  # Observe o comportamento do relé
+try:
+    while True:
+        print("Ligando relé...")
+        GPIO.output(RELE_GPIO_PIN, GPIO.LOW)  # INVERTIDO: LOW para ligar
+        time.sleep(2)
 
-# Teste com HIGH
-print("Definindo como HIGH...")
-GPIO.output(RELE_GPIO_PIN, GPIO.HIGH)
-time.sleep(5)  # Observe o comportamento do relé
+        print("Desligando relé...")
+        GPIO.output(RELE_GPIO_PIN, GPIO.HIGH)  # INVERTIDO: HIGH para desligar
+        time.sleep(2)
 
-GPIO.cleanup()
-print("Teste concluído.")
+except KeyboardInterrupt:
+    print("Teste interrompido pelo usuário.")
+
+finally:
+    GPIO.cleanup()
+    print("GPIO limpo. Fim do teste.")
